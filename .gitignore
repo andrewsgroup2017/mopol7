@@ -1,0 +1,13 @@
+.DS_Store
+node_modules/
+vue-firestore/
+dist/
+docs/
+framework/
+public/static/
+public/index.html
+functions/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+tests/unit/coverage/
