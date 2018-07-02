@@ -1,0 +1,8 @@
+{
+   "plugins": [
+      "prettier",
+      "vue-libs/recommended"
+
+    ],
+  "rules": {}
+}

@@ -16,9 +16,11 @@ import VueFire from 'vuefire'
 import Myfirebase from 'myfirebase'
 // import VueMaterial from 'vue-material'
 import Firestore from 'vue-firestore'
-
+// import * as ec from './plugins/evercookie'
 // Middlewares
 import middlewares from '@/middlewares/index'
+import VueFirestore from 'vue-firestore'
+Vue.use(VueFirestore)
 
 Vue.config.productionTip = false
 Vue.prototype.$mobile = true
@@ -49,38 +51,38 @@ Vue.use(Firestore)
 
 // Init Myfirebase
 Vue.use(Myfirebase, {
-    store: store,
-    router: router,
-    middlewares: middlewares
-});
+  store: store,
+  router: router,
+  middlewares: middlewares,
+})
 
 const app = new Vue({
-    router,
-    store,
-    mounted() {
-        /**
-         * Register Serviceworkers, these serviceworkers are registred while the vue app is mounted.
-         * service-worker.js is for app pre-cache.
-         * firebase-messaging-sw.js is for firebase cloud messaging (FCM).
-         * @see /public/service-worker.js
-         * @see /public/firebase-messaging-sw.js
-         * You are free to change them however you like.
-         */
-        let env = process.env.NODE_ENV;
-        if ('serviceWorker' in navigator && env == 'production') {
-            navigator.serviceWorker.register('/service-worker.js')
-            navigator.serviceWorker.register('/firebase-messaging-sw.js')
-            this.$store.state.messaging
-                .requestPermission()
-                .then(function() {
-                    console.log("Permission accepted")
-                })
-                .catch(function(error) {
-                    console.log("Permission denied")
-                })
-        }
-    },
-    data() {
-        return {}
+  router,
+  store,
+  mounted() {
+    /**
+     * Register Serviceworkers, these serviceworkers are registred while the vue app is mounted.
+     * service-worker.js is for app pre-cache.
+     * firebase-messaging-sw.js is for firebase cloud messaging (FCM).
+     * @see /public/service-worker.js
+     * @see /public/firebase-messaging-sw.js
+     * You are free to change them however you like.
+     */
+    let env = process.env.NODE_ENV
+    if ('serviceWorker' in navigator && env == 'production') {
+      navigator.serviceWorker.register('/service-worker.js')
+      navigator.serviceWorker.register('/firebase-messaging-sw.js')
+      this.$store.state.messaging
+        .requestPermission()
+        .then(function() {
+          console.log('Permission accepted')
+        })
+        .catch(function(error) {
+          console.log('Permission denied')
+        })
     }
-}).$mount('#app');
+  },
+  data() {
+    return {}
+  },
+}).$mount('#app')

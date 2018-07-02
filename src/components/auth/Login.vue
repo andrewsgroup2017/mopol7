@@ -1,21 +1,20 @@
-
 <template>
 <v-container fill-height justify-center align-center>
   <!-- <v-layout row > -->
     <v-flex xs8 sm8>
-      <!-- <h1> &nbsp;</h1> -->
-      <v-card class="mt-0 pt-0" v-if="ready">
-          <v-card-title class="primary">
-            <h4 style="color:white">Andrews</h4>
+      <!-- <h1> &nbsp</h1> -->
+      <v-card class='mt-0 pt-0' v-if='ready'>
+          <v-card-title class='primary'>
+            <h4 style='color:white'>Andrews</h4>
           </v-card-title>
           <v-card-text>
-              <form @submit.prevent="login">
+              <form @submit.prevent='login'>
                 <v-layout row>
                   <v-flex xs4>
                     <v-subheader>User ID</v-subheader>
                   </v-flex>
                   <v-flex xs8>
-                    <v-text-field  name="email" v-model="email" label="email" value="Input text"></v-text-field>
+                    <v-text-field  name='email' v-model='email' label='email' value='Input text'></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
@@ -23,21 +22,30 @@
                     <v-subheader>Password</v-subheader>
                   </v-flex>
                   <v-flex xs8>
-                    <v-text-field  name="password" type="password" v-model="password" label="password" value="Input text"></v-text-field>
+                    <v-text-field  name='password' type='password' v-model='password' label='password' value='Input text'></v-text-field>
                   </v-flex>
                 </v-layout>
-                <v-btn type="submit">login</v-btn>
-                <v-snackbar v-if="error" :timeout="timeout" :top="true" :multi-line="mode === 'multi-line'" :vertical="mode === 'vertical'" v-model="error">
+                <v-btn type='submit'>login</v-btn>
+                <!-- <v-snackbar v-if='error' :timeout='timeout' :top='true' :multi-line='mode === 'multi-line'' :vertical='mode === 'vertical'' v-model='error'>
                   {{ text }}
-                  <v-btn class="pink--text" flat @click.native="error = false">Close</v-btn>
-                </v-snackbar>
+                  <v-btn class='pink--text' flat @click.native='error = false'>Close</v-btn>
+                </v-snackbar> -->
               </form>
+              {{data}}
         </v-card-text>
+            <ul class="reptileList">
+      <li v-for="reptile in data" >
+        {{ reptile.name }} -
+        <button @click="deleteReptile(reptile)">
+          Remove
+        </button>
+      </li>
+    </ul>
       </v-card>
-         <div v-if="!ready">
+         <div v-if='!ready'>
                 <v-progress-circular
       indeterminate
-      color="red"
+      color='red'
     ></v-progress-circular>
         </div>
 
@@ -48,199 +56,186 @@
 <script>
 /* eslint-disable no-unused-vars */
 export default {
-    mounted() {
-        this.$auth.logout()
-        this.$auth.state({
-            forward: '/crewlist',
-            redirect: '/login',
-            then: (user) => {
-
-            },
-            catch: () => {
-                this.ready = true;
-            }
-        });
-    },
-    data() {
-        return {
-            email: 'asdf@asdf.com',
-            password: 'asdfasdf',
-            error: '',
-            ready: false
-        }
-    },
-    computed: {},
-    firebase() {
-    return {
-      data: this.$store.state.database.child("crews")
-    };
-  },
-    methods: {
-
-      addMember(){
-        // console.log(this.email)
-        var userId = this.email
-    var db = this.$store.state.firestore
-    const deviceId = window.localStorage.getItem('deviceId')
-    console.log(deviceId)
-    var d = new Date()
-    var member = {
-      userId: userId,
-      owner: true,
-      client_time: d.toString()
-    }
-    db.collection('crews').doc(deviceId).collection('members').add({
-        member
-    }).then(doc => {
-        console.log(doc)
-          this.$store.state.database.child("logs").push({
-
-          eventType: "auth-login",
-          device_serial: deviceId,
-          client_time: new Date(),
-          userId: "a.downing"
-
-
-      });
-        // window.alert(doc)
-        // var tagsCollection = doc.collection('tags');
-
-        // // Begin a new batch
-        // var batch = db.batch();
-
-        // // Set each document, as part of the batch
-        // tags.forEach(t => {
-        //     var ref = tagsCollection.doc(t.id.toString());
-        //     batch.set(ref, t);
-        // })
-
-        // // Commit the entire batch
-        // return batch.commit();
+  mounted() {
+    this.$auth.logout()
+    this.$auth.state({
+      forward: '/crewlist',
+      redirect: '/login',
+      then: user => {},
+      catch: () => {
+        this.ready = true
+      },
     })
-},
-        login() {
-
-this.addMember(this.email)
-
-
-            // this.$auth.loginWithEmailAndPassowrd({
-            //     email: this.email,
-            //     password: this.password,
-            //     result: (user) => {
-            //       //         // this.$firebaseRefs.data.onDisconnect().cancel();
-            //       //          this.Item.push();
-            //       //   Member: new Member(this.$store.state.database.child('crews')).init()
-            //       //  this.Member.push();
-
-            //         this.ready = true;
-
-            //     },
-            //     error: (error) => {
-            //      console.log(error)
-            //      // this.$refs.snackbar.open()
-            //         // this.ready = true;
-            //         // this.error = error.message
-            //     }
-            // })
-            // this.middleware()
-        },
-        // register() {
-        //     this.ready = false
-        //     this.$auth.registerWithEmailAndPassword({
-        //         email: this.email,
-        //         password: this.password,
-        //         result: (user) => {
-        //             this.ready = true;
-        //             //console.log("User Email : " + user.email)
-        //         },
-        //         error: (error) => {
-        //             this.error = error.message
-        //             this.ready = false;
-        //             this.$refs.snackbar.open()
-        //         }
-        //     });
-        // },
-        middleware() {
-            this.password = ''
-        },
-        // signInGoogle() {
-        //     this.ready = false
-        //     this.$auth.signInWithGoogle({
-        //         result: (result) => {
-        //             // This gives you a Google Access Token. You can use it to access the Google API.
-        //             // console.log("Token : " + result.credential.accessToken)
-        //             // The signed-in user info.
-        //             //console.log("User Email : " + result.user.email)
-        //             this.ready = true
-        //         },
-        //         error: (error) => {
-        //             // Error
-        //             this.error = error.message
-        //             this.ready = false;
-        //             this.$refs.snackbar.open()
-        //         }
-        //     })
-        // },
-        // signInFacebook() {
-        //     this.ready = false
-        //     this.$auth.signInWithFacebook({
-        //         result: (result) => {
-        //             //console.log("Token : " + result.credential.accessToken)
-        //             //console.log("User Email : " + result.user.email)
-        //             this.ready = true
-        //         },
-        //         error: (error) => {
-        //             this.error = error.message
-        //             this.ready = false;
-        //             this.$refs.snackbar.open()
-        //         }
-        //     })
-        // },
-        // signInTwitter() {
-        //     this.ready = false
-        //     this.$auth.signInWithTwitter({
-        //         result: (result) => {
-        //             //console.log("Token : " + result.credential.accessToken)
-        //             //console.log("User Email : " + result.user.email)
-        //             //console.log(result.user)
-        //             this.ready = true
-        //         },
-        //         error: (error) => {
-        //             this.error = error.message
-        //             this.ready = false;
-        //             this.$refs.snackbar.open()
-        //         }
-        //     })
-        // },
-        // signInGithub() {
-        //     this.ready = false
-        //     this.$auth.signInWithGithub({
-        //         result: (result) => {
-        //             //console.log("Token : " + result.credential.accessToken)
-        //             //console.log("User Email : " + result.user.email)
-        //             this.true = true
-        //         },
-        //         error: (error) => {
-        //             this.error = error.message
-        //             this.ready = false;
-        //             this.$refs.snackbar.open()
-        //         }
-        //     })
-        // }
+  },
+  data() {
+    return {
+      email: 'asdf@asdf.com',
+      password: 'asdfasdf',
+      error: '',
+      ready: false,
     }
+  },
+  computed: {},
+  firestore() {
+    return {
+      data: this.$store.state.database.child('crews'),
+    }
+  },
+  methods: {
+    getLocationOfUser(userId) {
+      return new Promise(resolve => {
+        var vm = this
+        var geolocationCallback = function(location) {
+          resolve(location)
+        }
+        if (
+          typeof navigator !== 'undefined' &&
+          typeof navigator.geolocation !== 'undefined'
+        ) {
+          // log('Asking user to get their location')
+          navigator.geolocation.getCurrentPosition(
+            geolocationCallback,
+            errorHandler
+          )
+        } else {
+          // log(
+          //   'Your browser does not support the HTML5 Geolocation API, so this demo will not work.'
+          // )
+        }
+
+        var errorHandler = function(error) {
+          if (error.code == 1) {
+            // log('Error: PERMISSION_DENIED: User denied access to their location')
+          } else if (error.code === 2) {
+            // log(
+            //   'Error: POSITION_UNAVAILABLE: Network is down or positioning satellites cannot be reached'
+            // )
+          } else if (error.code === 3) {
+            // log("Error: TIMEOUT: Calculating the user's location too took long")
+          } else {
+            // log('Unexpected error code')
+          }
+          resolve('error')
+        }
+      })
+    },
+    // vm.$store.state.geofire
+    //   .set(username, deviceId, [latitude, longitude])
+    //   .then(function() {
+    //     log(
+    //       'Current user ' +
+    //         userId +
+    //         "'s location has been added to GeoFire"
+    //     )
+
+    //     // When the user disconnects from Firebase (e.g. closes the app, exits the browser),
+    //     // remove their GeoFire entry
+    //     firebaseRef
+    //       .child(username)
+    //       .onDisconnect()
+    //       .remove()
+
+    //     log(
+    //       'Added handler to remove user ' +
+    //         username +
+    //         ' from GeoFire when you leave this page.'
+    //     )
+    //   })
+    //   .catch(function(error) {
+    //     log('Error adding user ' + username + "'s location to GeoFire")
+    //   })
+    /*************/
+    /*  HELPERS  */
+    /*************/
+    /* Logs to the page instead of the console */
+    // function log(message) {
+    //   console.log(message)
+    //   // var childDiv = document.createElement('div')
+    //   // var textNode = document.createTextNode(message)
+    //   // childDiv.appendChild(textNode)
+    //   // document.getElementById('log').appendChild(childDiv)
+    // }
+
+    async addMember() {
+      // console.log(this.email)
+      // var userId = this.email
+
+      const userId = this.email.substring(this.email.indexOf('@') + 1)
+      const _loc = await this.getLocationOfUser()
+
+      const lat = _loc.coords.latitude
+      const lng = _loc.coords.longitude
+
+      const db = this.$store.state.firestore
+      const deviceId = window.localStorage.getItem('deviceId')
+
+      const now = new Date()
+      var member = {
+        userId: userId,
+        lat: lat,
+        lng: lng,
+        deviceId: deviceId,
+        client_time: now.toString(),
+      }
+      // console.log(member.loc)
+      console.log(member)
+
+      if (deviceId !== 'desktop' || 'debug') {
+        db
+          .collection('crews')
+          // .doc(deviceId)
+          // .collection('members')
+          .add({
+            member,
+          })
+          .then(doc => {
+            console.log(doc)
+            this.$store.state.database.child('logs').push({
+              eventType: 'auth-login',
+              device_serial: deviceId,
+              client_time: new Date(),
+              userId: 'a.downing',
+            })
+          })
+      }
+    },
+    async login() {
+      var vm = this
+      // const loc = await vm.getLocationOfUser()
+
+      this.$auth.loginWithEmailAndPassowrd({
+        email: this.email,
+        password: this.password,
+        result: user => {
+          vm.addMember()
+          vm.email = ''
+          vm.password = ''
+          this.ready = true
+        },
+        error: error => {
+          console.log(error)
+          // this.$refs.snackbar.open()
+          // this.ready = true
+          // this.error = error.message
+        },
+      })
+      this.middleware()
+    },
+    middleware() {
+      this.password = ''
+    },
+  },
 }
 </script>
-
-
 <style scoped>
 .push-down {
-    margin-top: 15px;
+  margin-top: 15px;
 }
 
 .icon {
-    height: 18px;
-    width: 18px;
-    margin-right: 8px;
+  height: 18px;
+  width: 18px;
+  margin-right: 8px;
 }
 </style>
 

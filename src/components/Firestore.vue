@@ -34,56 +34,61 @@
 </template>
 
 <script>
-
-import Person from "./../models/Person"
+import Person from './../models/Person'
 
 export default {
-    mounted() {
-        this.$auth.check({
-            then: (user) => {
-                // retrieve the logged-in user
-            },
-            catch: () => {
-                // user is not logged in
-            }
+  mounted() {
+    this.$auth.check({
+      then: user => {
+        // retrieve the logged-in user
+      },
+      catch: () => {
+        // user is not logged in
+      },
+    })
+  },
+  firestore() {
+    return {
+      Persons: this.$store.state.firestore.collection('Persons'),
+    }
+  },
+  data() {
+    return {
+      username: '',
+      Person: new Person(
+        this.$store.state.firestore.collection('Persons')
+      ).init(),
+    }
+  },
+  methods: {
+    add() {
+      this.Person.add()
+        .then(success => {
+          this.Person.name = ''
+        })
+        .catch(error => {
+          console.log(error.message)
         })
     },
-    firestore() {
-        return {
-            Persons: this.$store.state.firestore.collection("Persons")
-        }
+    remove(e) {
+      this.Person.delete(e['.key'])
+        .then(() => {
+          console.log('Done')
+        })
+        .catch(error => {
+          console.log(error.message)
+        })
     },
-    data() {
-        return {
-            username: "",
-            Person: new Person(this.$store.state.firestore.collection('Persons')).init()
-        }
-    },
-    methods: {
-        add() {
-            this.Person.add().then((success) => {
-                this.Person.name = ""
-            }).catch(error => {
-                console.log(error.message)
-            })
-        },
-        remove(e) {
-            this.Person.delete(e['.key']).then(() => {
-                console.log("Done")
-            }).catch(error => {
-                console.log(error.message)
-            })
-        }
-    }
+  },
 }
 </script>
 
 <style scoped>
 .container {
-    margin: 0 auto;
+  margin: 0 auto;
 }
 
 .data-container {
-    width: 700px;
+  width: 700px;
 }
 </style>

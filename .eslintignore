@@ -1,0 +1,9 @@
+Android-PWA-Wrapper
+node_modules
+tests
+public
+build
+config
+.vscode
+static
+functions

@@ -1,10 +1,10 @@
 <template>
-  <v-app id="root" dark>
-      <!-- <notifications position="bottom right" group="all" /> -->
+  <v-app id='root' dark>
+      <!-- <notifications position='bottom right' group='all' /> -->
 
-<input type="button" value="Say hello" @click="showAndroidToast('Hello Android!')" />
+<input type='button' value='Say hello' @click="showAndroidToast('Hello Android!')" />
 
-      <div v-if="!mobile">
+      <div v-if='!mobile'>
           <sidenav />
       <v-content>
         <router-view></router-view>
@@ -18,55 +18,51 @@
       <bottomnav/>
       </div>
           <v-snackbar
-        :timeout="6000"
-        :color="message.color"
-        :bottom="true"
-        v-model="message.visible"
+        :timeout='6000'
+        :color='message.color'
+        :bottom='true'
+        v-model='message.visible'
       >
-        <v-icon dark class="mr-2">{{ message.icon }}</v-icon>
+        <v-icon dark class='mr-2'>{{ message.icon }}</v-icon>
         {{ message.text }}
-        <v-btn dark flat @click.native="message.visible = false">
+        <v-btn dark flat @click.native='message.visible = false'>
           <v-icon dark right>close</v-icon>
         </v-btn>
       </v-snackbar>
   </v-app>
 </template>
-
-  <script>
-import SideNav from "./partials/SideNav";
-//  import ComsPanel from "./layout/ComsPanel";
-import AFooter from "./partials/AFooter";
-import BottomNav from "./partials/BottomNav";
-import StatusWidget from "./partials/StatusWidget";
-import { mapGetters } from "vuex";
+<script>
+import SideNav from './partials/SideNav'
+//  import ComsPanel from './layout/ComsPanel'
+import AFooter from './partials/AFooter'
+import BottomNav from './partials/BottomNav'
+import StatusWidget from './partials/StatusWidget'
 
 // window.alert(window.location.href)
 function listCookies() {
-    var theCookies = window.document.cookie.split(';');
-    var aString = '';
-    for (var i = 1 ; i <= theCookies.length; i++) {
-        aString += i + ' ' + theCookies[i-1] + "\n";
-    }
-    return aString;
+  var theCookies = window.document.cookie.split('')
+  var aString = ''
+  for (var i = 1; i <= theCookies.length; i++) {
+    aString += i + ' ' + theCookies[i - 1] + '\n'
+  }
+  return aString
 }
-var x = document.cookie;
-// window.alert(x);
+
 console.log(listCookies())
 // import * as Instascan from '../plugins/instascan.min.js'
-// const Instascan = require("../plugins/instascan.min.js");
-//remove
+// const Instascan = require('../plugins/instascan.min.js')
 export default {
-  name: "App",
+  name: 'App',
   components: {
     sidenav: SideNav,
     afooter: AFooter,
     statuswidget: StatusWidget,
-    bottomnav: BottomNav
-    // "fab": Fab
+    bottomnav: BottomNav,
+    // 'fab': Fab
   },
   data() {
     return {
-      direction: "left",
+      direction: 'left',
       fab: false,
       fixed: true,
       fling: true,
@@ -77,34 +73,46 @@ export default {
       right: true,
       bottom: true,
       left: false,
-      transition: "slide-y-reverse-transition"
-    };
-  },
-  created () {
-  this.mobile = this.$mobile
+      transition: 'slide-y-reverse-transition',
+    }
   },
   computed: {
     // ...mapGetters({
     //    messaging
     // }),
-    message(){
+    message() {
       return this.$store.state.messaging
-    }
+    },
   },
   methods: {
     alert() {
-      // alert('Clicked on alert icon');
+      // alert('Clicked on alert icon')
     },
-
   },
-  created () {
+  created() {
+    this.$mobile = true
+    var isLookBehindSupported = false
+    /* eslint-disable-next-line */
+    try {
+      isLookBehindSupported = !!new RegExp('(?<=)')
+    } catch (e) {
+      console.log('mobile')
       window.localStorage.setItem('deviceId', Android.getidInfo())
-
-  }
-};
+      this.$mobile = true
+    }
+    if (isLookBehindSupported) {
+      console.log('not mobile')
+      window.localStorage.setItem('deviceId', 'desktop')
+    } else {
+      console.log('mobile2')
+      this.$mobile = true
+      window.localStorage.setItem('deviceId', Android.getidInfo())
+    }
+  },
+}
 </script>
 
-  <style lang="stylus" scoped>
+  <style lang='stylus' scoped>
   .speed-dial--bottom:not(.speed-dial--absolute) {
     bottom: 40%;
     right: 5px;
